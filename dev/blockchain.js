@@ -1,7 +1,7 @@
 // 创建Blockchain Constructor Function
 function Blockchain() {
   this.chain = [];
-  this.newTransactions = [];
+  this.pendingTransactions = [];
 }
 
 // Create newBlock Method
@@ -13,7 +13,7 @@ Blockchain.prototype.createNewBlock = function(nonce, previousBlockHash, hash){
     timestamp: Date.now(),         // 时间戳，记录区块生成的时间
     // 当创建以新区块，要将所有的新交易记录放进去，使不能更改；
     // 也就是说，这个newBlock里的所有交易应是new transactions or pending transactions，即将落实到区块中:
-    transactions: this.newTransactions,
+    transactions: this.pendingTransactions,
     // 接下来是proof，来自 proof of work，
     // 本例中采用数字，某个随机数nonce，也可以使用proof of work method
     // 作用是以合法的方式创建这个新区块：
@@ -22,7 +22,7 @@ Blockchain.prototype.createNewBlock = function(nonce, previousBlockHash, hash){
     previousBlockHash: previousBlockHash, // 前一个区块的 hash
   }
 
-  this.newTransactions = []  // 生成上面的区块后，清空，从而开始下一个区块的生成
+  this.pendingTransactions = []  // 生成上面的区块后，清空，从而开始下一个区块的生成
   this.chain.push(newBlock)  // 将生成的区块添加到链上，最后返回生成的newBlock
 
   return newBlock
@@ -31,6 +31,23 @@ Blockchain.prototype.createNewBlock = function(nonce, previousBlockHash, hash){
 // 'Get Last Block' Method
 Blockchain.prototype.getLastBlock = function() {
   return this.chain[this.chain.length - 1]
+}
+
+// 'Create new transaction' method
+Blockchain.prototype.createNewTransaction = function (amount, sender, recipient) {
+    // create a transaction object，所有记住区块链上的交易都长这样子：
+    const newTransaction = {
+      amount: amount,      // 此次交易的amount
+      sender: sender,      // sender's address
+      recipient: recipient,
+    }
+    // 添加new transaction 到 pendingTransactions
+    // 这里面的交易并非一成不变，它们还未记到区块上，即未执行this.chain.push(newBlock)
+    // 当一个新的区块生成时，才会记上去，才不可更改
+    // 所以这里的所有new transactions 几乎只是 pending transactions，是还未经验证的
+    this.pendingTransactions.push(newTransaction)
+    // return the number of the block that this transaction will be added to
+    return this.getLastBlock()['index'] + 1
 }
 
 module.exports = Blockchain
