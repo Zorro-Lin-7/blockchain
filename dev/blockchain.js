@@ -9,7 +9,7 @@ Blockchain.prototype.createNewBlock = function(nonce, previousBlockHash, hash){
   // 首先要做的不是创建一个 newBlock方法，而是创建一个 newBlock object
   // 下面是一个区块链中的区块，用于存放所有的数据
   const newBlock = {
-    index: this.chian.length + 1,  // 索引属性，链上第 n 个区块
+    index: this.chain.length + 1,  // 索引属性，链上第 n 个区块
     timestamp: Date.now(),         // 时间戳，记录区块生成的时间
     // 当创建以新区块，要将所有的新交易记录放进去，使不能更改；
     // 也就是说，这个newBlock里的所有交易应是new transactions or pending transactions，即将落实到区块中:
@@ -27,3 +27,6 @@ Blockchain.prototype.createNewBlock = function(nonce, previousBlockHash, hash){
 
   return newBlock
 }
+
+
+module.exports = Blockchain
