@@ -1,3 +1,5 @@
+const sha256 = require('sha256')
+
 // 创建Blockchain Constructor Function
 function Blockchain() {
   this.chain = [];
@@ -50,4 +52,19 @@ Blockchain.prototype.createNewTransaction = function (amount, sender, recipient)
     return this.getLastBlock()['index'] + 1
 }
 
+
+Blockchain.prototype.hashBlock = function(blockData) {
+  /*
+What this hash block method will do is
+it will take in a block from our block chain and hash that block
+into some fixed length string.
+That to us will appear pretty much random.
+So in essence we're going to pass some block or some blocks of data into our method
+and in return
+we will get some fixed length string that looks something like this.
+    return '09ab0reg0bt90thqgrdlw32'
+
+How? We're going to use a hashing function called Shaw256
+}
+*/
 module.exports = Blockchain
