@@ -1,6 +1,6 @@
-const Blockchain = require('./blockchain')
+const Blockchain = require('./blockchain') // import our blockchain data structure
 
-const bitcoin = new Blockchain();
+const bitcoin = new Blockchain()    // create a new instance of our blockchain
 // 挖矿产生区块
 bitcoin.createNewBlock(2245, 'o08qg3', '055wrjl2') //随便输入3个参数
 // 生成pending transactions
