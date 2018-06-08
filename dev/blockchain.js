@@ -53,7 +53,7 @@ Blockchain.prototype.createNewTransaction = function (amount, sender, recipient)
 }
 
 
-Blockchain.prototype.hashBlock = function(blockData) {
+Blockchain.prototype.hashBlock = function(previousBlockHash, currentBlockData, nonce) {
   /*
 What this hash block method will do is
 it will take in a block from our block chain and hash that block
@@ -67,4 +67,12 @@ we will get some fixed length string that looks something like this.
 How? We're going to use a hashing function called Shaw256
 }
 */
+    // change all of these parameters into a single string
+    const dataAsString = previousBlockHash + nonce.toString() + JSON.stringify(currentBlockData)
+    // create our hash:
+    const hash = sha256(dataAsString)
+    return hash
+}
+
+
 module.exports = Blockchain
