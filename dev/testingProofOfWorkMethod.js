@@ -23,3 +23,5 @@ const currentBlockData = [
 
 console.log(bitcoin.proofOfWork(previousBlockHash, currentBlockData))
 // 返回结果为 25171，表示proofOfWork method 找到一个以‘0000’开头的hash 迭代了25171次
+// 将25171代入hashBlock 进行验证：
+console.log(bitcoin.hashBlock(previousBlockHash, currentBlockData, 25171))
