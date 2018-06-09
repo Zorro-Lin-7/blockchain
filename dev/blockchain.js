@@ -62,12 +62,14 @@ Blockchain.prototype.hashBlock = function(previousBlockHash, currentBlockData, n
 }
 
 
-Blockchain.prototype.prooOfWork = function (previousBlockHash, currentBlockData) {
+Blockchain.prototype.proofOfWork = function (previousBlockHash, currentBlockData) {
   let nonce = 0
   let hash = this.hashBlock(previousBlockHash, currentBlockData, nonce)
-  while (hash.substring(0, 4) !== '0000') { // 本例随便假设要找的hash 是4个0开的的'0000ANS0'
+   // 本例随便假设要找的hash 是4个0开的的'0000ANS0'，即找到它才能创建新区块
+  while (hash.substring(0, 4) !== '0000') {
     nonce += 1
     hash = this.hashBlock(previousBlockHash, currentBlockData, nonce)
+    console.log(hash)
   }
 
   return nonce
