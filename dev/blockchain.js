@@ -75,4 +75,38 @@ How? We're going to use a hashing function called Shaw256
 }
 
 
+Blockchain.prototype.prooOfWork = function (previousBlockHash, currentBlockData) {
+  // => 重复 hashBlock method 直到找到正确的hash 本例假设为'0000OIANSDFUI09N9N0'
+  // => 采用currentBlockData，同时也用 previousBlockHash
+  // => 连续改变 nonce 值 直到找到正确的 hash
+  // => return 该 nonce 值
+};
+
+/*
+Proof Of Work 是区块链非常安全的原因之一。我们不希望固有区块被篡改，我们需要确保新增到链上的
+每个区块都是合法的，里面的数据，如交易数据，都是无误的。否则就可能导致造假、欺诈。所以，
+当每创建一个新的block时，我们首先要确保这是一个合法的区块，即通过proof of work 的方式来保证。
+
+a proof of work method 要做的是：
+给定 current Block Data 和 previous Block Hash，
+然后用它们，以某种方式生成一个特定的 hash ——本例随便假设为 '0000OIANSDFUI09N9N0'.
+
+hash 是通过sha256 生成的，也就是说所有 hash几乎是随机码，无规律可循，
+我们如何以current block 来得到这个hash呢？猜。反复试错，直到猜对为止。
+也就是说我们要 反复运行 hashBlock method 很多很多次，直到找到'0000OIANSDFUI09N9N0'
+
+更具体的：
+1. 运行 hashBlock method，从初始 nonce = 0 开始
+2. 如果 生成的 hash 不是'0000OIANSDFUI09N9N0'，取nonce = 1 继续运行 hashBlock Method
+3. nonce 值连续递增地运行 hashBlock method 直到找到 '0000OIANSDFUI09N9N0'
+
+POW method 到底如何保证区块链的安全？
+生成一个正确的 hash 需要运行 hash block method 无数次，需要极大的算力和电力。如果某人想
+回头篡改已生成的区块数据，他需要花费极大成本来得到正确的 hash。这几乎是不可能的，只要这个成本足够大。
+另外，hashBlock method 的参数，除了要current Block Data，还要求传入 previous Block hash，
+这意味着区块链上的所有区块是相连的，数据是联动的，若某人要篡改或重建某个固有区块数据，那么他就需要一并改动整条链
+上的区块，牵一发动全身。
+这就是区块链技术的安全性。
+*/
+
 module.exports = Blockchain
