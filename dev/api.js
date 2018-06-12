@@ -21,7 +21,11 @@ app.get('/blockchain', function (req, res) {
 // this is the endpoint that we will hit to create a new transaction on our block chain.
 app.post('/transaction', function (req, res) {
     console.log(req.body)
-    res.send(`The amount of the transaction is ${req.body.amount} bitcoin.`)
+    const blockIndex = bitcoin.createNewTransaction(req.body.amount, req.body.sender, req.body.recipient)
+    res.json({ note: `Transaction will be added in block ${blockIndex}.` })
+    // 任何人每次调用'/transaction' 即是他发送一个request，将要发送的所有交易数据放在里面的body里
+    // 且 .createNewBlock 方法会 return block number，我们将其存到变量 blockIndex
+    // 同时将其作为一条 note 发送回去
 })
 
 
