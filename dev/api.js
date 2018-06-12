@@ -1,7 +1,9 @@
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
+const Blockchain = require('./blockchain')  // 导入blockchain.js
 
+const bitcoin = new Blockchain()  // 创建实例
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false}))
@@ -10,8 +12,8 @@ app.use(bodyParser.urlencoded({ extended: false}))
 // First endpoint is going to be "/blockchain"
 // what this endpoint is going to do is
 // when we hit it it is simply going to send back to us our entire blockchain
-app.get('/blockchian', function (req, res) {
-
+app.get('/blockchain', function (req, res) {
+    res.send(bitcoin)  // 返回的是 Genesis block
 })
 
 
