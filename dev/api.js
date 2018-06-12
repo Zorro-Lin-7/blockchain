@@ -1,5 +1,11 @@
-var express = require('express')
-var app = express()
+const express = require('express')
+const app = express()
+const bodyParser = require('body-parser')
+
+
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: false}))
+
 
 // First endpoint is going to be "/blockchain"
 // what this endpoint is going to do is
@@ -12,7 +18,8 @@ app.get('/blockchian', function (req, res) {
 // The next point that we are going to make is going to be post to "/transaction"
 // this is the endpoint that we will hit to create a new transaction on our block chain.
 app.post('/transaction', function (req, res) {
-
+    console.log(req.body)
+    res.send(`The amount of the transaction is ${req.body.amount} bitcoin.`)
 })
 
 
@@ -23,6 +30,7 @@ app.post('/transaction', function (req, res) {
 app.get('/mine', function (req, res) {
 
 })
+
 
 // 添加一个函数，已观察服务器正常运行ing
 app.listen(3000, function () {
