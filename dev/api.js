@@ -34,7 +34,23 @@ app.post('/transaction', function (req, res) {
 // And what this '/mine' end point will do is
 // it will mine a new block for us or create a new block
 app.get('/mine', function (req, res) {
+    const lastBlock = bitcoin.getLastBlock()
+    const previousBlockHash = lastBlock['hash']
+    const currentBlockData = {
+      transactions: bitcoin.pendingTransactions,
+      index:lastBlock['index'] + 1
+      // 你也可以添加其他信息，目前足够了
+    }
+    const nonce = bitcoin.proofOfWork(previousBlockHash, currentBlockData)
+    const blockHash = bitcoin.hashBlock(previousBlockHash, currentBlockData, nonce)
 
+    bitcoin.createNewTransaction(12.5, '00', ) // 最后一步：每当某人“挖出”一个新区块，就奖励他比特币，'00'作统一的颁奖sender
+
+    const newBlock = bitcoin.createNewBlock(nonce, previousBlockHash, blockHash)
+    res.json({  // send the response back to whoever mined this block
+      note: "New block mined successfully",
+      block: newBlock,
+    })
 })
 
 
