@@ -2,6 +2,9 @@ const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
 const Blockchain = require('./blockchain')  // 导入blockchain.js
+const uuid = require('uuid/v1')  // version 1 of this library
+
+const nodeAddress = uuid().split('-').join('') // node本身的地址，uuid得到的string有很多'-'，修改一下
 
 const bitcoin = new Blockchain()  // 创建实例
 
@@ -44,9 +47,10 @@ app.get('/mine', function (req, res) {
     const nonce = bitcoin.proofOfWork(previousBlockHash, currentBlockData)
     const blockHash = bitcoin.hashBlock(previousBlockHash, currentBlockData, nonce)
 
-    bitcoin.createNewTransaction(12.5, '00', ) // 最后一步：每当某人“挖出”一个新区块，就奖励他比特币，'00'作统一的颁奖sender
+    bitcoin.createNewTransaction(12.5, '00', nodeAddress) // 最后一步：每当某人“挖出”一个新区块，就奖励他比特币，'00'作统一的颁奖sender
 
     const newBlock = bitcoin.createNewBlock(nonce, previousBlockHash, blockHash)
+    
     res.json({  // send the response back to whoever mined this block
       note: "New block mined successfully",
       block: newBlock,
