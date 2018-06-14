@@ -71,7 +71,7 @@ Blockchain.prototype.proofOfWork = function (previousBlockHash, currentBlockData
   while (hash.substring(0, 4) !== '0000') {
     nonce += 1
     hash = this.hashBlock(previousBlockHash, currentBlockData, nonce)
-    console.log(hash)
+    // console.log(hash) // 最终全局测试时，最好删除，减轻程序负担，之后我们会做存储
   }
 
   return nonce
