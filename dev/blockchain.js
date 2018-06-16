@@ -1,9 +1,13 @@
 const sha256 = require('sha256')
+const currentNodeUrl = process.argv[3]
 
 // 创建Blockchain Constructor Function
 function Blockchain() {
   this.chain = [];
   this.pendingTransactions = [];
+
+  this.currentNodeUrl = currentNodeUrl;
+  this.networkNodes = []; // 区块链也需要知道在 network 中的其他节点，之后填充
 
   this.createNewBlock(100, '0', '0')  // 任意参数
 }
