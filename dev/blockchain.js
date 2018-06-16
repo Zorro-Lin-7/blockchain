@@ -7,7 +7,7 @@ function Blockchain() {
   this.pendingTransactions = [];
 
   this.currentNodeUrl = currentNodeUrl;
-  this.networkNodes = []; // 区块链也需要知道在 network 中的其他节点，之后填充
+  this.networkNodes = [];
 
   this.createNewBlock(100, '0', '0')  // 任意参数
 }

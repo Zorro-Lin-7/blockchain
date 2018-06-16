@@ -69,6 +69,16 @@ app.post('/register-and-broadcast-node', function(req, res) {
   const newNodeUrl = req.body.newNodeUrl;
   // do some calculations down here and we're going to broadcast it to the entire network.
   // So all the other nodes can add it as well.
+  if (bitcoin.networkNodes.indexOf(newNodeUrl) == -1) {
+    bitcoin.networkNodes.push(newNodeUrl)
+  }
+// broadcast:
+// for every network node inside of our network nodes array
+// we are going to want to hit the register node endpoint
+  bitcoin.networkNodes.foreach(networkNodeUrl => {
+    // 'register-node'
+  })
+
 })
 
 
