@@ -3,7 +3,8 @@ const app = express()
 const bodyParser = require('body-parser')
 const Blockchain = require('./blockchain')  // 导入blockchain.js
 const uuid = require('uuid/v1')  // version 1 of this library
-const port = process.argv[2];
+const port = process.argv[2]
+const rp = require('request-promise')
 
 const nodeAddress = uuid().split('-').join('') // node本身的地址，uuid得到的string有很多'-'，修改一下
 
@@ -75,10 +76,24 @@ app.post('/register-and-broadcast-node', function(req, res) {
 // broadcast:
 // for every network node inside of our network nodes array
 // we are going to want to hit the register node endpoint
+  const regNodesPromises = []
   bitcoin.networkNodes.foreach(networkNodeUrl => {
     // 'register-node'
+    // to make a request to every single node at this point.
+    const requestOptions = {  // define the options that we want to use for each request.
+      uri: networkNodes + '/register-node',
+      method: 'POST',
+      body: { newNodeUrl: newNodeUrl},
+      json: true
+    }
+
+    regNodesPromises.push(rp(requestOptions))
   })
 
+  Promise.all(regNodesPromises)
+         .then(data => {
+           // use the data
+         })
 })
 
 
