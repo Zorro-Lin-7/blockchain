@@ -59,6 +59,33 @@ app.get('/mine', function (req, res) {
 })
 
 
+// what this endpoint will do is it will register a node and broadcast that node to the whole network.
+// how we're going to do that is
+// we are going to pass in the URL of the node we want to register on the rec.body.newNodeUrl.
+// we are going to send in the URL of a new node that we want to add to our network.
+// hit this endpoint, it is going to register the new node on its own server
+// and then it's going to broadcast this new node to all of the other network nodes
+app.post('/register-and-broadcast-node', function(req, res) {
+  const newNodeUrl = req.body.newNodeUrl;
+  // do some calculations down here and we're going to broadcast it to the entire network.
+  // So all the other nodes can add it as well.
+})
+
+
+// register a node with the network
+// when all of the other network nodes receive the new nodes URL
+// We just want them to register it.We dont want them to broadcast it.
+app.post('/register-node', function(req, res) {
+
+})
+
+
+// register multiple nodes at once
+app.post('/register-nodes-bulk', function(req, res) {
+
+})
+
+
 // 添加一个函数，已观察服务器正常运行ing
 app.listen(port, function () {
   console.log(`Listening on port ${port}...`)
