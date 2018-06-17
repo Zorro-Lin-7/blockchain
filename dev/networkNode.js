@@ -111,8 +111,11 @@ app.post('/register-and-broadcast-node', function(req, res) {
 // We just want them to register it.We dont want them to broadcast it.
 app.post('/register-node', function(req, res) {
     const newNodeUrl = req.body.newNodeUrl  // 1, define the new node URL, take the new node URL that is sent in the body
-    bitcoin.networkNodes.push(newNodeUrl)  // 2, register this new node URL With the node received this request
-    res.json({ note: "New node registered successfully with node."  // 3. send back a response
+    const nodeNotAlreadyPresent = bitcoin.networkNodes.indexOf(newNodeUrl) == -1 // newNodeUrl 是否已存在于 networkNodes
+    const notCurrentNode = bitcoin.currentNodeUrl !== newNodeUrl
+    if (nodeNotAlreadyPresent && notCurrentNode) {
+      bitcoin.networkNodes.push(newNodeUrl)  // 2, register this new node URL With the node received this request
+      res.json({ note: "New node registered successfully." }) // 3. send back a response
     }
 })
 
