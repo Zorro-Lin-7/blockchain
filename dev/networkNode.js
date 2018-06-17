@@ -121,8 +121,12 @@ app.post('/register-node', function(req, res) {
 
 
 // register multiple nodes at once
+// whenever we hit this endpoint we are on the new node that's being added to the network.
 app.post('/register-nodes-bulk', function(req, res) {
-
+    const allNetworkNodes = req.body.allNetworkNodes
+    allNetworkNodes.forEach(networkNodeUrl) => {
+      bitcoin.networkNodes.push(networkNodeUrl)
+    }
 })
 
 
