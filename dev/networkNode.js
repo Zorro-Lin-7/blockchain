@@ -77,13 +77,13 @@ app.post('/register-and-broadcast-node', function(req, res) {
 // for every network node inside of our network nodes array
 // we are going to want to hit the register node endpoint
   const regNodesPromises = []
-  bitcoin.networkNodes.foreach(networkNodeUrl => {
+  bitcoin.networkNodes.forEach(networkNodeUrl => {
     // 'register-node'
     // to make a request to every single node at this point.
     const requestOptions = {  // define the options that we want to use for each request.
-      uri: networkNodes + '/register-node',
+      uri: networkNodeUrl + '/register-node',
       method: 'POST',
-      body: { newNodeUrl: newNodeUrl},
+      body: { newNodeUrl: newNodeUrl },
       json: true
     }
 
@@ -91,16 +91,17 @@ app.post('/register-and-broadcast-node', function(req, res) {
   })
 
   Promise.all(regNodesPromises)
-         .then(data => {
+  .then(data => {
            const bulkRegisterOptions = {
              uri: newNodeUrl + '/register-nodes-bulk',
              method: "POST",
              body: { allNetworkNodes: [ ...bitcoin.networkNodes, bitcoin.currentNodeUrl ] },
              json: true
            }
+
            return rp(bulkRegisterOptions)
          })
-         .then(data => {
+  .then(data => {
            res.json({ note: 'New node registered with network successfully.' })
          })
 })
@@ -114,9 +115,9 @@ app.post('/register-node', function(req, res) {
     const nodeNotAlreadyPresent = bitcoin.networkNodes.indexOf(newNodeUrl) == -1 // newNodeUrl 是否已存在于 networkNodes
     const notCurrentNode = bitcoin.currentNodeUrl !== newNodeUrl
     if (nodeNotAlreadyPresent && notCurrentNode) {
-      bitcoin.networkNodes.push(newNodeUrl)  // 2, register this new node URL With the node received this request
-      res.json({ note: "New node registered successfully." }) // 3. send back a response
+      bitcoin.networkNodes.push(newNodeUrl)   // 2, register this new node URL With the node received this request
     }
+      res.json({ note: "New node registered successfully." }) // 3. send back a response  
 })
 
 
