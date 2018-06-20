@@ -1,5 +1,6 @@
 const sha256 = require('sha256')
 const currentNodeUrl = process.argv[3]
+const uuid = require('uuid/v1')
 
 // 创建Blockchain Constructor Function
 function Blockchain() {
@@ -48,16 +49,16 @@ Blockchain.prototype.createNewTransaction = function (amount, sender, recipient)
       amount: amount,      // 此次交易的amount
       sender: sender,      // sender's address
       recipient: recipient,
+      transactionId: uuid().split('-').join('')
     }
-    // 添加new transaction 到 pendingTransactions
-    // 这里面的交易并非一成不变，它们还未记到区块上，即未执行this.chain.push(newBlock)
-    // 当一个新的区块生成时，才会记上去，才不可更改
-    // 所以这里的所有new transactions 几乎只是 pending transactions，是还未经验证的
-    this.pendingTransactions.push(newTransaction)
-    // return the number of the block that this transaction will be added to
-    return this.getLastBlock()['index'] + 1
+
+    return newTransaction
 }
 
+Blockchain.prototype.addTransactionToPendingTransactions = function(transactionObj){
+  this.pendingTransactions.push(transactionObj)
+  return this.getLastBlock()['index'] + 1
+}
 
 Blockchain.prototype.hashBlock = function(previousBlockHash, currentBlockData, nonce) {
     // change all of these parameters into a single string
