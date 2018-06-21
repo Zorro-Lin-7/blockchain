@@ -34,6 +34,31 @@ app.post('/transaction', function (req, res) {
 })
 
 
+// 1, create a new transaction
+// 2, broadcast the new transaction to all the other nodes in our network
+app.post('/transaction/broadcast', function(req, res) {
+  const newTransaction = bitcoin.createNewTransaction(req.body.amount, req.body.sender, req.body.recipient)
+  bitcoin.addTransactionToPendingTransactions(newTransaction)
+
+  const requestPromises = []
+  bitcoin.networkNodes.forEach(networkNodeUrl => {
+    // 广播到其他nodes，需要向network 中的其他nodes 的 /transaction endpoint 发送requests
+    const requestOptions = {                // 创建一个request 对象，包含以下几项：
+      uri: networkNodeUrl + '/transaction', // network node URL
+      method: 'POST',                       // request method
+      body: newTransaction,                 // body是 新的交易记录
+      json: true
+    }
+
+    requestPromises.push(rp(requestOptions))//通过循环，push所有requests 到新建的array中，从而能同时执行所有请求
+  })
+
+  Promise.all(requestPromises)    // run all of those requests，整个broadcast完成，下面的data来自这些requests
+         .then(data => { // 所有requsts 运行完后，then 传入一个函数，接受的参数是'data'，实际这里没用到data参数，函数只是返回res
+           res.json({ note: 'Transaction created and broadcast successfully.' })
+         })
+})
+
 // the third point that we are going to create will be app that get to "/mine"
 // and put our callback function in here with the request and response.
 // And what this '/mine' end point will do is
@@ -117,7 +142,7 @@ app.post('/register-node', function(req, res) {
     if (nodeNotAlreadyPresent && notCurrentNode) {
       bitcoin.networkNodes.push(newNodeUrl)   // 2, register this new node URL With the node received this request
     }
-      res.json({ note: "New node registered successfully." }) // 3. send back a response  
+      res.json({ note: "New node registered successfully." }) // 3. send back a response
 })
 
 
