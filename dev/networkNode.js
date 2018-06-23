@@ -75,13 +75,13 @@ app.get('/mine', function (req, res) {
     const requestPromises = []
     bitcoin.networkNodes.forEach(networkNodeUrl => {
       const requestOptions = {
-        uri: networkNodeUrl + '/receive-new-block'
+        uri: networkNodeUrl + '/receive-new-block',
         method: "POST",
         body: { newBlock: newBlock },
         json: true
       }
 
-      requestOptions.push(rp(requestOptions))
+      requestPromises.push(rp(requestOptions))
     })
 
     Promise.all(requestPromises)
@@ -120,7 +120,7 @@ app.post('/receive-new-block', function(req, res) {
         bitcoin.chain.push(newBlock)      // 上链
         bitcoin.pendingTransactions = []  // 新区块上链后，清空，因为已经包含着“挖”出来的新区块里了
         res.json({
-            note: "New block received and accepted.',
+            note: "New block received and accepted.",
             newBlock: newBlock
             })
     } else {
