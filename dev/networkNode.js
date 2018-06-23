@@ -70,14 +70,40 @@ app.get('/mine', function (req, res) {
     }
     const nonce = bitcoin.proofOfWork(previousBlockHash, currentBlockData)
     const blockHash = bitcoin.hashBlock(previousBlockHash, currentBlockData, nonce)
-
-    bitcoin.createNewTransaction(12.5, '00', nodeAddress) // 最后一步：每当某人“挖出”一个新区块，就奖励他比特币，'00'作统一的颁奖sender
-
     const newBlock = bitcoin.createNewBlock(nonce, previousBlockHash, blockHash)
 
-    res.json({  // send the response back to whoever mined this block
-      note: "New block mined successfully",
-      block: newBlock,
+    const requestPromises = []
+    bitcoin.networkNodes.forEach(networkNodeUrl => {
+      const requestOptions = {
+        uri: networkNodeUrl + '/recieve-new-block'
+        method: "POST",
+        body: { newBlock: newBlock },
+        json: true
+      }
+
+      requestOptions.push(rp(requestOptions))
+    })
+
+    Promise.all(requestPromises)
+           .then(data => {
+             const requestOptions = {
+               uri: bitcoin.currentNodeUrl + '/transaction/broadcast',
+               method: 'POST',
+               body: {
+                 amount: 12.5,
+                 sender: "00",
+                 recipient: nodeAddress
+               },
+               json: true
+             }
+
+             return rp(requestOptions)
+           })
+           .then(data => {
+             res.json({  // send the response back to whoever mined this block
+               note: "New block mined & broadcast successfully",
+               block: newBlock,
+           })
     })
 })
 
