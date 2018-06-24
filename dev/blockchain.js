@@ -80,7 +80,7 @@ Blockchain.prototype.proofOfWork = function (previousBlockHash, currentBlockData
   }
 
   return nonce
-};
+}
 
 
 // validate if a chain is legitimate or not.
@@ -91,7 +91,7 @@ Blockchain.prototype.chainIsValid = function(blockchain) {
         const currentBlock = blockchain[i]
         const prevBlock = blockchain[i - 1]
         const blockHash = this.hashBlock(prevBlock['hash'], 
-                                         { transaction: currentBlock['transactions'], 
+                                         { transactions: currentBlock['transactions'], 
                                            index: currentBlock['index'] 
                                            },
                                            currentBlock['nonce'])
@@ -101,6 +101,9 @@ Blockchain.prototype.chainIsValid = function(blockchain) {
         if (currentBlock['previousBlockHash'] !== prevBlock['hash']) {
             validChain = false
         }
+        
+        console.log('previousBlockHash =>', prevBlock['hash'])
+        console.log('currentBlockHash =>', currentBlock['hash'])
     }
     // 注意上面循环由 i=1 开始，没有考虑 i = 0 的genesis，因为它不经过POW，所以在for 之外补充验证
     const genesisBlock = blockchain[0]
@@ -114,7 +117,7 @@ Blockchain.prototype.chainIsValid = function(blockchain) {
     }
 
     return validChain
-};
+}
 
 
 module.exports = Blockchain
