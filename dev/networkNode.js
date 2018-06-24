@@ -111,11 +111,11 @@ app.get('/mine', function (req, res) {
 // inside of this endpoint, we are receiving a new block from a broadcast
 // We are expected to add this new block to our block chain.
 app.post('/receive-new-block', function(req, res) {
-    const newBlock = req.body.newBlock    
+    const newBlock = req.body.newBlock
     const lastBlock = bitcoin.getLastBlock()
     const correctHash = lastBlock.hash === newBlock.previousBlockHash // broadcost 后，其他node需要验证新区块是否合法，包括hash 和index
     const correctIndex = lastBlock['index'] + 1 === newBlock['index']
-    
+
     if (correctHash && correctIndex) {
         bitcoin.chain.push(newBlock)      // 上链
         bitcoin.pendingTransactions = []  // 新区块上链后，清空，因为已经包含着“挖”出来的新区块里了
@@ -211,6 +211,53 @@ app.post('/register-nodes-bulk', function(req, res) {
     res.json({ note: 'Bulk registeration successful.' })
 })
 
+
+app.get('/consensus', function(req, res) {
+    const requestPromises = []
+    bitcoin.networkNodes.forEach(networkNodeUrl => {
+        const requestOptions = {
+            uri: networkNodeUrl + '/blockchain',
+            method: 'GET',
+            json: true
+        }
+
+        requestPromises.push(rp(requestOptions))
+    })
+
+    Promise.all(requestPromises)
+           .then(blockchains => { // name 用 blockchains 而不是data，因为GET 到的是由 各node 的 blockchain 组成的数组
+               const currentChainLength = bitcoin.chain.length
+               let maxChainLength = currentChainLength
+               let newLongestChain = null
+               let newPendingTransactions = null
+
+               blockchains.forEach(blockchain => {
+                    if (blockchain.chain.length > maxChainLength) {
+                        maxChainLength = blockchain.chain.length
+                        newLongestChain = blockchain.chain
+                        newPendingTransactions = blockchain.pendingTransactions
+                    }
+               })
+              // 若 !newLongestChain，即当前Chain最长， 或者存在newLongestChain 但它无效
+              // 那么，在当前node 不用替换 blockchain
+               if (!newLongestChain || (newLongestChain && !bitcoin.chainIsValid(newLongestChain))) {
+                 res.json({
+                   note: 'Current chain has not been replaced.',
+                   chain: bitcoin.chain
+                 })
+               }
+               else { // if (newLongestChain && bitcoin.chainIsValid(newLongestChain))
+                 // replace
+                 bitcoin.chain = newLongestChain
+                 bitcoin.pendingTransactions = newPendingTransactions
+                 res.json({
+                   note: 'This chain has been replaced.',
+                   chain: bitcoin.chain
+                 })
+               }
+
+           })
+})
 
 // 添加一个函数，已观察服务器正常运行ing
 app.listen(port, function () {
