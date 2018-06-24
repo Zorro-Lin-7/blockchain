@@ -259,6 +259,22 @@ app.get('/consensus', function(req, res) {
            })
 })
 
+
+// 输入指定的block hash，返回该hash对应的block
+app.get('/block/:blockHash', function(req, res) {
+    
+})
+
+
+app.get('/transaction/:transactionId', function(req, res) {
+
+})
+
+
+app.get('/address/:address', function(req, res) {
+
+})
+
 // 添加一个函数，已观察服务器正常运行ing
 app.listen(port, function () {
   console.log(`Listening on port ${port}...`)
