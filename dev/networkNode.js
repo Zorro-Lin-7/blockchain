@@ -261,8 +261,12 @@ app.get('/consensus', function(req, res) {
 
 
 // 输入指定的block hash，返回该hash对应的block
-app.get('/block/:blockHash', function(req, res) {
-    
+app.get('/block/:blockHash', function(req, res) {  // lockalhost:3001/block/EWONGR256E8
+    const blockHash = req.params.blockHash  // req.params object 含有该URL 内的数据，即提供access
+    const correctBlock = bitcoin.getBlock(blockHash)
+    res.json({
+      block: correctBlock
+    })
 })
 
 
