@@ -153,7 +153,7 @@ Blockchain.prototype.getTransaction = function(transactionId) {
 Blockchain.prototype.getAddressData = function(address) {
     const addressTransactions = [] // 将所有交易记录与address关联，所有定义一个数组来容纳，包括sender 和recipient 2种address
     this.chain.forEach(block => {
-        block.transaction.forEach(transaction => {
+        block.transactions.forEach(transaction => {
             if (transaction.sender === address || transaction.recipient === address) {
                 addressTransactions.push(transaction)
             }
