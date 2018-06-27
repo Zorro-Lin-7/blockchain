@@ -288,6 +288,12 @@ app.get('/address/:address', function(req, res) {
     })
 })
 
+
+// send index.html file to whoever called this endpoint
+app.get('/block-explorer', function(req, res) {
+  res.sendFile('./block-explorer/index.html', { root: __dirname }) // 查看当前目录，找到其下的文件
+})
+
 // 添加一个函数，已观察服务器正常运行ing
 app.listen(port, function () {
   console.log(`Listening on port ${port}...`)
